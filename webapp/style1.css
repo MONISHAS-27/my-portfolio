@@ -114,6 +114,8 @@ h1 {
    max-width: 1200px; /* Optional: Sets a maximum width for the section */
    margin: 0 auto; /* Centers the section horizontally */
    padding: 20px; /* Adds some padding around the section */
+   position: relative;
+   overflow: hidden;
 }
 
 #index img {
