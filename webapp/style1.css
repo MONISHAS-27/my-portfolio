@@ -11,18 +11,11 @@ body {
    margin: 0;
    padding: 5%;
    text-align: center;
-
    background-size: cover; /* Ensures the image covers the entire page */
    background-repeat: no-repeat;
    background-attachment: fixed;
-   content: '';
-   position: absolute;
-   top: 0;
-   left: 0;
-   width: 100%;
-   height: 100%;
-   /* Repeat stars across the entire page */
-   z-index: -1;
+   box-sizing: border-box;
+   min-height: 100vh;
 }
 nav {
    width: 100%;
@@ -114,8 +107,6 @@ h1 {
    max-width: 1200px; /* Optional: Sets a maximum width for the section */
    margin: 0 auto; /* Centers the section horizontally */
    padding: 20px; /* Adds some padding around the section */
-   position: relative;
-   overflow: hidden;
 }
 
 #index img {
@@ -137,9 +128,17 @@ h1 {
    }
 
    #index img {
-       max-width: 90%; /* Adjust image width for mobile */
+       max-width: 60%; /* Adjust image width for mobile (90% was too large) */
        margin: 0 auto 20px; /* Center the image and add space below */
        margin-top: 50px;
+   }
+
+   .moveh {
+       font-size: 1.8em; /* Shrink title on mobile */
+   }
+
+   .movep {
+       font-size: 1rem; /* Shrink subtitle on mobile */
    }
 }
 
@@ -308,10 +307,11 @@ p {
    }
 
    .year-box {
-      width: 20%;
+      width: auto; /* Removed fixed 20% width to allow text to fit */
       top: -15px;
       font-size: 1rem;
       padding: 8px 15px;
+      white-space: nowrap; /* Prevent text from wrapping to a second line */
    }
 }
 
@@ -323,6 +323,7 @@ p {
    .year-box {
       font-size: 0.9rem;
       padding: 5px 10px;
+      white-space: nowrap;
    }
 }
 /* Project Section */
@@ -723,6 +724,7 @@ p {
 @media screen and (max-width: 768px) {
    .contact-container {
       flex-direction: column; /* Stack items vertically */
+      align-items: center; /* Center the items horizontally */
    }
    .left-side,
    .right-side {
