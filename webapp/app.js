@@ -357,10 +357,120 @@
   }
 
   // ============================
+  // 9. GALAXY PORTAL — SWIRLING VORTEX AROUND PHOTO
+  // ============================
+  function initGalaxyPortal() {
+    const portalCanvas = document.getElementById('portal-canvas');
+    if (!portalCanvas) return;
+
+    const pCtx = portalCanvas.getContext('2d');
+    const wrapper = portalCanvas.parentElement;
+
+    function resizePortal() {
+      portalCanvas.width = wrapper.offsetWidth;
+      portalCanvas.height = wrapper.offsetHeight;
+    }
+    resizePortal();
+    window.addEventListener('resize', resizePortal);
+
+    // Particle rings
+    const rings = [
+      { count: 40, radius: 155, speed: 0.008, size: 2.2, color: [108, 63, 160], tilt: 0.3 },
+      { count: 30, radius: 175, speed: -0.005, size: 1.6, color: [30, 144, 255], tilt: 0.5 },
+      { count: 25, radius: 190, speed: 0.003, size: 1.2, color: [0, 245, 212], tilt: 0.15 },
+    ];
+
+    const particles = [];
+
+    rings.forEach((ring) => {
+      for (let i = 0; i < ring.count; i++) {
+        const angle = (Math.PI * 2 * i) / ring.count + Math.random() * 0.3;
+        particles.push({
+          angle,
+          radius: ring.radius + (Math.random() - 0.5) * 20,
+          speed: ring.speed * (0.8 + Math.random() * 0.4),
+          size: ring.size * (0.6 + Math.random() * 0.8),
+          color: ring.color,
+          tilt: ring.tilt,
+          opacity: 0.3 + Math.random() * 0.7,
+          twinkleSpeed: 0.005 + Math.random() * 0.015,
+          twinkleDir: Math.random() > 0.5 ? 1 : -1,
+        });
+      }
+    });
+
+    // Central glow time offset
+    let glowPhase = 0;
+
+    function drawPortal() {
+      const w = portalCanvas.width;
+      const h = portalCanvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      pCtx.clearRect(0, 0, w, h);
+
+      // Central glow
+      glowPhase += 0.015;
+      const glowSize = 100 + Math.sin(glowPhase) * 15;
+      const glowAlpha = 0.08 + Math.sin(glowPhase * 0.7) * 0.03;
+      const gradient = pCtx.createRadialGradient(cx, cy, 0, cx, cy, glowSize);
+      gradient.addColorStop(0, `rgba(108, 63, 160, ${glowAlpha + 0.05})`);
+      gradient.addColorStop(0.4, `rgba(30, 144, 255, ${glowAlpha})`);
+      gradient.addColorStop(0.7, `rgba(0, 245, 212, ${glowAlpha * 0.5})`);
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      pCtx.fillStyle = gradient;
+      pCtx.fillRect(0, 0, w, h);
+
+      // Draw particles
+      for (const p of particles) {
+        p.angle += p.speed;
+
+        // Twinkle
+        p.opacity += p.twinkleDir * p.twinkleSpeed;
+        if (p.opacity >= 1) { p.opacity = 1; p.twinkleDir = -1; }
+        if (p.opacity <= 0.2) { p.opacity = 0.2; p.twinkleDir = 1; }
+
+        // 3D projection: tilt the ring
+        const x3d = Math.cos(p.angle) * p.radius;
+        const z3d = Math.sin(p.angle) * p.radius * p.tilt;
+        const y3d = Math.sin(p.angle) * p.radius;
+
+        // Simple depth scaling
+        const depthScale = 1 + z3d * 0.002;
+        const drawX = cx + x3d * depthScale;
+        const drawY = cy + y3d * depthScale * 0.6;
+        const drawSize = p.size * (0.8 + depthScale * 0.3);
+
+        // Particles behind the photo are dimmer
+        const behindFade = z3d < 0 ? 0.35 : 1;
+
+        pCtx.beginPath();
+        pCtx.arc(drawX, drawY, drawSize, 0, Math.PI * 2);
+        pCtx.fillStyle = `rgba(${p.color[0]}, ${p.color[1]}, ${p.color[2]}, ${p.opacity * behindFade})`;
+        pCtx.fill();
+
+        // Glow halo for brighter particles
+        if (drawSize > 1.5 && behindFade > 0.5) {
+          pCtx.beginPath();
+          pCtx.arc(drawX, drawY, drawSize * 3, 0, Math.PI * 2);
+          pCtx.fillStyle = `rgba(${p.color[0]}, ${p.color[1]}, ${p.color[2]}, ${p.opacity * 0.08})`;
+          pCtx.fill();
+        }
+      }
+
+      requestAnimationFrame(drawPortal);
+    }
+
+    drawPortal();
+  }
+
+  // ============================
   // INITIALIZATION
   // ============================
   document.addEventListener('DOMContentLoaded', () => {
     initCanvas();
+    initGalaxyPortal();
     typeEffect();
     initScrollAnimations();
     initTiltEffect();
