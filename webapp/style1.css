@@ -1160,9 +1160,13 @@ body::before {
   .hero-content {
     gap: 50px;
   }
+  .hero-image-wrapper {
+    width: 420px;
+    height: 480px;
+  }
   .hero-image {
-    width: 230px;
-    height: 280px;
+    width: 340px;
+    height: 400px;
   }
 }
 
@@ -1217,13 +1221,13 @@ body::before {
   }
 
   .hero-image-wrapper {
-    width: 280px;
-    height: 320px;
+    width: 340px;
+    height: 400px;
   }
 
   .hero-image {
-    width: 200px;
-    height: 240px;
+    width: 280px;
+    height: 340px;
   }
 
   .hero-subtitle {
@@ -1279,13 +1283,13 @@ body::before {
   }
 
   .hero-image-wrapper {
-    width: 240px;
-    height: 280px;
+    width: 300px;
+    height: 360px;
   }
 
   .hero-image {
-    width: 170px;
-    height: 210px;
+    width: 250px;
+    height: 300px;
   }
 
   .hero-title {
