@@ -244,16 +244,17 @@ body::before {
   width: 100%;
 }
 
-/* Oval profile image with galaxy portal */
+/* Profile image with galaxy portal */
 .hero-image-wrapper {
   position: relative;
   flex-shrink: 0;
-  width: 500px;
-  height: 560px;
+  width: 650px;
+  height: 700px;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.95) 20%, rgba(0, 0, 0, 0.5) 50%, transparent 75%);
 }
 
 /* Portal canvas behind the photo */
@@ -269,27 +270,15 @@ body::before {
 .hero-image {
   position: relative;
   z-index: 2;
-  width: 400px;
-  height: 480px;
+  width: 550px;
+  height: auto;
   object-fit: cover;
-  border-radius: 50% / 45%;
-  border: 3px solid rgba(108, 63, 160, 0.5);
-  background: var(--void-black);
-  box-shadow:
-    0 0 30px rgba(108, 63, 160, 0.4),
-    0 0 60px rgba(30, 144, 255, 0.15),
-    inset 0 0 20px rgba(0, 0, 0, 0.35);
   transition: var(--transition-smooth);
   /* Prevent star particles from bleeding over the photo */
   isolation: isolate;
 }
 
 .hero-image:hover {
-  box-shadow:
-    0 0 40px rgba(108, 63, 160, 0.5),
-    0 0 80px rgba(30, 144, 255, 0.2),
-    0 0 110px rgba(0, 245, 212, 0.12),
-    inset 0 0 20px rgba(0, 0, 0, 0.3);
   transform: scale(1.04);
 }
 
