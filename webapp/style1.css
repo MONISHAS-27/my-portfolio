@@ -249,7 +249,8 @@ body::before {
   position: relative;
   flex-shrink: 0;
   width: 650px;
-  height: 700px;
+  height: auto;
+  padding: 40px 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -271,6 +272,7 @@ body::before {
   z-index: 2;
   width: 550px;
   height: auto;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
   transition: var(--transition-smooth);
   /* Prevent star particles from bleeding over the photo */
@@ -1149,12 +1151,14 @@ body::before {
     gap: 50px;
   }
   .hero-image-wrapper {
-    width: 420px;
-    height: 480px;
+    width: 550px;
+    height: auto;
+    max-width: 100%;
   }
   .hero-image {
-    width: 340px;
-    height: 400px;
+    width: 450px;
+    height: auto;
+    max-width: 100%;
   }
 }
 
@@ -1209,13 +1213,15 @@ body::before {
   }
 
   .hero-image-wrapper {
-    width: 340px;
-    height: 400px;
+    width: 450px;
+    height: auto;
+    max-width: 100%;
   }
 
   .hero-image {
-    width: 280px;
-    height: 340px;
+    width: 380px;
+    height: auto;
+    max-width: 100%;
   }
 
   .hero-subtitle {
@@ -1271,13 +1277,15 @@ body::before {
   }
 
   .hero-image-wrapper {
-    width: 300px;
-    height: 360px;
+    width: 380px;
+    height: auto;
+    max-width: 100%;
   }
 
   .hero-image {
-    width: 250px;
-    height: 300px;
+    width: 340px;
+    height: auto;
+    max-width: 100%;
   }
 
   .hero-title {
