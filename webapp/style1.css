@@ -270,13 +270,13 @@ body::after {
   z-index: 1;
 }
 
-/* Portal canvas behind the photo */
+/* Portal canvas ON TOP of the photo (planetary ring effect) */
 #portal-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
+  z-index: 3;
   pointer-events: none;
 }
 
@@ -290,6 +290,36 @@ body::after {
   transition: var(--transition-smooth);
   /* Prevent star particles from bleeding over the photo */
   isolation: isolate;
+}
+
+/* Rotating gradient ring behind hero image */
+.hero-image-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  transform: translate(-50%, -50%);
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(108, 63, 160, 0.08) 60deg,
+    transparent 120deg,
+    rgba(30, 144, 255, 0.06) 180deg,
+    transparent 240deg,
+    rgba(0, 245, 212, 0.05) 300deg,
+    transparent 360deg
+  );
+  border-radius: 50%;
+  animation: orbitRingSpin 12s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(8px);
+}
+
+@keyframes orbitRingSpin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 .hero-image:hover {

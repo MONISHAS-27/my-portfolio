@@ -164,10 +164,10 @@
   // ============================
   const typedEl = document.getElementById('typed-text');
   const phrases = [
-    'Full-Stack MERN Developer ✨',
-    'Building Robust Web Applications 🚀',
-    'React · Node · Express · MongoDB 💎',
-    'Passionate about Clean Code & Innovation 💡',
+    'Full-Stack MERN Developer',
+    'Building Robust Web Applications',
+    'React · Node · Express · MongoDB',
+    'Passionate about Clean Code & Innovation',
   ];
   let phraseIndex = 0;
   let charIndex = 0;
@@ -356,9 +356,6 @@
     });
   }
 
-  // ============================
-  // 9. GALAXY PORTAL — SWIRLING VORTEX AROUND PHOTO
-  // ============================
   function initGalaxyPortal() {
     const portalCanvas = document.getElementById('portal-canvas');
     if (!portalCanvas) return;
@@ -373,33 +370,67 @@
     resizePortal();
     window.addEventListener('resize', resizePortal);
 
-    // Particle rings
-    const rings = [
-      { count: 40, radius: 155, speed: 0.008, size: 2.2, color: [108, 63, 160], tilt: 0.3 },
-      { count: 30, radius: 175, speed: -0.005, size: 1.6, color: [30, 144, 255], tilt: 0.5 },
-      { count: 25, radius: 190, speed: 0.003, size: 1.2, color: [0, 245, 212], tilt: 0.15 },
+    // ── Orbital ring definitions ──
+    const orbitalRings = [
+      { count: 55, rFracX: 0.52, rFracY: 0.46, speed: 0.007,  size: 3.2, tiltAngle: 0.3,  rotation: 0,             trailLen: 14 },
+      { count: 45, rFracX: 0.58, rFracY: 0.42, speed: -0.005, size: 2.8, tiltAngle: 0.5,  rotation: Math.PI / 6,   trailLen: 12 },
+      { count: 40, rFracX: 0.65, rFracY: 0.50, speed: 0.004,  size: 2.4, tiltAngle: 0.18, rotation: -Math.PI / 5,  trailLen: 10 },
+      { count: 30, rFracX: 0.72, rFracY: 0.56, speed: -0.003, size: 2.6, tiltAngle: 0.6,  rotation: Math.PI / 3,   trailLen: 16 },
+      { count: 25, rFracX: 0.45, rFracY: 0.38, speed: 0.010,  size: 2.0, tiltAngle: 0.35, rotation: -Math.PI / 8,  trailLen: 8  },
     ];
 
-    const particles = [];
+    // ── Build particle array ──
+    const orbitParticles = [];
 
-    rings.forEach((ring) => {
+    orbitalRings.forEach((ring) => {
       for (let i = 0; i < ring.count; i++) {
-        const angle = (Math.PI * 2 * i) / ring.count + Math.random() * 0.3;
-        particles.push({
+        const angle = (Math.PI * 2 * i) / ring.count + Math.random() * 0.5;
+        const jitter = 1 + (Math.random() - 0.5) * 0.18;
+        orbitParticles.push({
           angle,
-          radius: ring.radius + (Math.random() - 0.5) * 20,
-          speed: ring.speed * (0.8 + Math.random() * 0.4),
-          size: ring.size * (0.6 + Math.random() * 0.8),
-          color: ring.color,
-          tilt: ring.tilt,
-          opacity: 0.3 + Math.random() * 0.7,
-          twinkleSpeed: 0.005 + Math.random() * 0.015,
+          rFracX: ring.rFracX * jitter,
+          rFracY: ring.rFracY * jitter,
+          speed: ring.speed * (0.7 + Math.random() * 0.6),
+          baseSize: ring.size * (0.5 + Math.random() * 0.8),
+          tiltAngle: ring.tiltAngle,
+          rotation: ring.rotation,
+          opacity: 0.5 + Math.random() * 0.5,
+          twinkleSpeed: 0.006 + Math.random() * 0.025,
           twinkleDir: Math.random() > 0.5 ? 1 : -1,
+          trailLen: ring.trailLen,
+          starRotation: Math.random() * Math.PI * 2,
+          spinSpeed: (Math.random() - 0.5) * 0.04,
+          trail: [],
         });
       }
     });
 
-    // Central glow time offset
+    // ── Helper: draw a 4-point star shape ──
+    function drawStar(ctx, x, y, size, rotation, alpha) {
+      const spikes = 4;
+      const outerR = size;
+      const innerR = size * 0.35;
+
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      ctx.beginPath();
+
+      for (let i = 0; i < spikes * 2; i++) {
+        const r = i % 2 === 0 ? outerR : innerR;
+        const a = (Math.PI * i) / spikes - Math.PI / 2;
+        if (i === 0) {
+          ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+        } else {
+          ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+        }
+      }
+      ctx.closePath();
+      ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+      ctx.fill();
+      ctx.restore();
+    }
+
     let glowPhase = 0;
 
     function drawPortal() {
@@ -408,55 +439,93 @@
       const cx = w / 2;
       const cy = h / 2;
 
+      // Full clear each frame
       pCtx.clearRect(0, 0, w, h);
 
-      // Central glow
-      glowPhase += 0.015;
-      const glowSize = 100 + Math.sin(glowPhase) * 15;
-      const glowAlpha = 0.08 + Math.sin(glowPhase * 0.7) * 0.03;
-      const gradient = pCtx.createRadialGradient(cx, cy, 0, cx, cy, glowSize);
-      gradient.addColorStop(0, `rgba(108, 63, 160, ${glowAlpha + 0.05})`);
-      gradient.addColorStop(0.4, `rgba(30, 144, 255, ${glowAlpha})`);
-      gradient.addColorStop(0.7, `rgba(0, 245, 212, ${glowAlpha * 0.5})`);
-      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      pCtx.fillStyle = gradient;
+      // ── Subtle central glow (white/silver) ──
+      glowPhase += 0.012;
+      const glowSize = Math.min(w, h) * 0.22 + Math.sin(glowPhase) * 15;
+      const glowAlpha = 0.04 + Math.sin(glowPhase * 0.7) * 0.02;
+
+      const grad1 = pCtx.createRadialGradient(cx, cy, 0, cx, cy, glowSize);
+      grad1.addColorStop(0, `rgba(255, 255, 255, ${glowAlpha + 0.03})`);
+      grad1.addColorStop(0.4, `rgba(220, 230, 255, ${glowAlpha})`);
+      grad1.addColorStop(0.7, `rgba(180, 200, 240, ${glowAlpha * 0.4})`);
+      grad1.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      pCtx.fillStyle = grad1;
       pCtx.fillRect(0, 0, w, h);
 
-      // Draw particles
-      for (const p of particles) {
+      // ── Draw orbit star particles ──
+      for (const p of orbitParticles) {
         p.angle += p.speed;
+        p.starRotation += p.spinSpeed;
 
         // Twinkle
         p.opacity += p.twinkleDir * p.twinkleSpeed;
         if (p.opacity >= 1) { p.opacity = 1; p.twinkleDir = -1; }
         if (p.opacity <= 0.2) { p.opacity = 0.2; p.twinkleDir = 1; }
 
-        // 3D projection: tilt the ring
-        const x3d = Math.cos(p.angle) * p.radius;
-        const z3d = Math.sin(p.angle) * p.radius * p.tilt;
-        const y3d = Math.sin(p.angle) * p.radius;
+        // Compute radii from canvas size
+        const radiusX = w * p.rFracX;
+        const radiusY = h * p.rFracY;
 
-        // Simple depth scaling
-        const depthScale = 1 + z3d * 0.002;
-        const drawX = cx + x3d * depthScale;
-        const drawY = cy + y3d * depthScale * 0.6;
-        const drawSize = p.size * (0.8 + depthScale * 0.3);
+        // 3D elliptical orbit
+        const cosR = Math.cos(p.rotation);
+        const sinR = Math.sin(p.rotation);
+        const rawX = Math.cos(p.angle) * radiusX;
+        const rawY = Math.sin(p.angle) * radiusY;
+        const rotX = rawX * cosR - rawY * sinR;
+        const rotY = rawX * sinR + rawY * cosR;
 
-        // Particles behind the photo are dimmer
-        const behindFade = z3d < 0 ? 0.35 : 1;
+        // Depth tilt
+        const z3d = rotY * p.tiltAngle;
+        const depthScale = 1 + z3d * 0.001;
+        const drawX = cx + rotX * depthScale;
+        const drawY = cy + rotY * depthScale * 0.55;
+        const drawSize = p.baseSize * (0.8 + depthScale * 0.3);
 
-        pCtx.beginPath();
-        pCtx.arc(drawX, drawY, drawSize, 0, Math.PI * 2);
-        pCtx.fillStyle = `rgba(${p.color[0]}, ${p.color[1]}, ${p.color[2]}, ${p.opacity * behindFade})`;
-        pCtx.fill();
+        // Planetary ring: only show front side
+        const isFront = z3d >= 0;
 
-        // Glow halo for brighter particles
-        if (drawSize > 1.5 && behindFade > 0.5) {
-          pCtx.beginPath();
-          pCtx.arc(drawX, drawY, drawSize * 3, 0, Math.PI * 2);
-          pCtx.fillStyle = `rgba(${p.color[0]}, ${p.color[1]}, ${p.color[2]}, ${p.opacity * 0.08})`;
-          pCtx.fill();
+        // Store trail
+        p.trail.push({ x: drawX, y: drawY, size: drawSize, alpha: p.opacity, visible: isFront });
+        if (p.trail.length > p.trailLen) p.trail.shift();
+
+        // Draw trail dots (white, only front side)
+        for (let t = 0; t < p.trail.length; t++) {
+          const tp = p.trail[t];
+          if (!tp.visible) continue;
+
+          const progress = t / p.trail.length;
+          const trailAlpha = progress * tp.alpha * 0.4;
+          const trailSize = tp.size * (0.15 + progress * 0.5);
+
+          if (trailAlpha > 0.01) {
+            pCtx.beginPath();
+            pCtx.arc(tp.x, tp.y, trailSize, 0, Math.PI * 2);
+            pCtx.fillStyle = `rgba(255, 255, 255, ${trailAlpha})`;
+            pCtx.fill();
+          }
         }
+
+        // Only draw the star if in front
+        if (!isFront) continue;
+
+        // Draw white glowing mini star
+        drawStar(pCtx, drawX, drawY, drawSize, p.starRotation, p.opacity);
+
+        // Soft white glow halo around each star
+        pCtx.save();
+        pCtx.globalCompositeOperation = 'lighter';
+        const starGlow = pCtx.createRadialGradient(drawX, drawY, 0, drawX, drawY, drawSize * 5);
+        starGlow.addColorStop(0, `rgba(255, 255, 255, ${p.opacity * 0.15})`);
+        starGlow.addColorStop(0.3, `rgba(220, 235, 255, ${p.opacity * 0.08})`);
+        starGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        pCtx.fillStyle = starGlow;
+        pCtx.beginPath();
+        pCtx.arc(drawX, drawY, drawSize * 5, 0, Math.PI * 2);
+        pCtx.fill();
+        pCtx.restore();
       }
 
       requestAnimationFrame(drawPortal);
